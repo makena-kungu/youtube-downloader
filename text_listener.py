@@ -1,5 +1,5 @@
 from tkinter import StringVar, Label, Tk, Menu
-from tkinter.ttk import OptionMenu
+from tkinter.ttk import OptionMenu, Entry
 
 from pytube.exceptions import RegexMatchError
 
@@ -9,7 +9,9 @@ from main import *
 def callback(sv, head: Label, options: OptionMenu):
     try:
         url = sv.get()
-        head.config(text=title(url))
+        t = title(url)
+        print(t)
+        head.config(text=t)
 
         # get the resolutions
         ress = get_resolutions(url)
@@ -21,8 +23,6 @@ def callback(sv, head: Label, options: OptionMenu):
         pass
 
 
-def attach_listener(widget: Label, drop_down: OptionMenu):
-    sv = StringVar()
-
-    sv.trace("w", lambda *args: callback(sv, widget, drop_down))
+def attach_listener(sv: StringVar, header: Label, drop_down: OptionMenu):
+    sv.trace("w", lambda *args: callback(sv, header, drop_down))
     return sv
