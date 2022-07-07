@@ -1,28 +1,31 @@
-from tkinter import StringVar, Label, Tk, Menu
-from tkinter.ttk import OptionMenu, Entry
+from tkinter import StringVar, Label
+from tkinter.ttk import OptionMenu
 
 from pytube.exceptions import RegexMatchError
 
 from main import *
 
 
-def callback(sv, head: Label, options: OptionMenu):
+def callback(link_var, head: Label, error_label: Label, options: OptionMenu):
     try:
-        url = sv.get()
+        url = link_var.get()
         t = title(url)
-        print(t)
+        error_label.config(text='', fg='red')
         head.config(text=t)
 
         # get the resolutions
-        ress = get_resolutions(url)
+        resolutions = get_resolutions(url)
+
         menu_var = StringVar()
-        menu_var.set(ress[len(ress) - 1])
+        menu_var.set(resolutions[len(resolutions) - 1])
         # clear items from the menu
-        options.set_menu('720p', *ress)
+        options.set_menu('720p', *resolutions)
     except RegexMatchError:
-        pass
+        text = 'Invalid URL!'
+        error_label.config(text=text, fg='red')
+        print(text)
 
 
-def attach_listener(sv: StringVar, header: Label, drop_down: OptionMenu):
-    sv.trace("w", lambda *args: callback(sv, header, drop_down))
-    return sv
+def attach_listener(link_var: StringVar, header: Label, error_label: Label, options_menu: OptionMenu):
+    link_var.trace("w", lambda *args: callback(link_var, header, error_label, options_menu))
+    return link_var
